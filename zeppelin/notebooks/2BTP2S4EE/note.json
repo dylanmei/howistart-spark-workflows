@@ -1,0 +1,181 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md Run the paragraph below to download and extract the [Maxmind GeoLiteCity database](http://dev.maxmind.com/geoip/legacy/geolite/).",
+      "dateUpdated": "Aug 14, 2016 2:02:39 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471183344166_167466844",
+      "id": "20160814-140224_1499383713",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003cp\u003eRun the paragraph below to download and extract the \u003ca href\u003d\"http://dev.maxmind.com/geoip/legacy/geolite/\"\u003eMaxmind GeoLiteCity database\u003c/a\u003e.\u003c/p\u003e\n"
+      },
+      "dateCreated": "Aug 14, 2016 2:02:24 AM",
+      "dateStarted": "Aug 14, 2016 2:02:36 AM",
+      "dateFinished": "Aug 14, 2016 2:02:36 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\n\ncd /var/lib/data/geo\nif [ ! -f GeoLiteCity.dat ]; then\n    curl -s -O http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz\n    gzip -d GeoLiteCity.dat.gz\nfi\n",
+      "dateUpdated": "Aug 14, 2016 1:57:26 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471138254979_2125971279",
+      "id": "20160814-013054_800893307",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Aug 14, 2016 1:30:54 AM",
+      "dateStarted": "Aug 14, 2016 1:56:32 AM",
+      "dateFinished": "Aug 14, 2016 1:56:32 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\nAdd a third-party **Repository** for [maven.snplow.com](http://maven.snplow.com/releases) in Zeppelin\u0027s Interpreter configuration. *Hint: It\u0027s the gear icon in the upper-right.*\n\n- `id`: snowplow\n- `url`: http://maven.snplow.com/releases\n- `snapshot`: false\n\nEdit the **Spark** Interpreter and add `com.snowplowanalytics:scala-maxmind-iplookups_2.11:0.2.0` as a dependency. artifact. Once complete, the following paragraph should run successfully.",
+      "dateUpdated": "Aug 14, 2016 3:27:56 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471138244693_124876926",
+      "id": "20160814-013044_1894701475",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003cp\u003eAdd a third-party \u003cstrong\u003eRepository\u003c/strong\u003e for \u003ca href\u003d\"http://maven.snplow.com/releases\"\u003emaven.snplow.com\u003c/a\u003e in Zeppelin\u0027s Interpreter configuration. \u003cem\u003eHint: It\u0027s the gear icon in the upper-right.\u003c/em\u003e\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e\u003ccode\u003eid\u003c/code\u003e: snowplow\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003eurl\u003c/code\u003e: http://maven.snplow.com/releases\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003esnapshot\u003c/code\u003e: false\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eEdit the \u003cstrong\u003eSpark\u003c/strong\u003e Interpreter and add \u003ccode\u003ecom.snowplowanalytics:scala-maxmind-iplookups_2.11:0.2.0\u003c/code\u003e as a dependency. artifact. Once complete, the following paragraph should run successfully.\u003c/p\u003e\n"
+      },
+      "dateCreated": "Aug 14, 2016 1:30:44 AM",
+      "dateStarted": "Aug 14, 2016 2:06:26 AM",
+      "dateFinished": "Aug 14, 2016 2:06:26 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\n\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\nval ipLookups \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n\nfor (location \u003c- ipLookups.performLookupsWithoutLruCache(\"98.237.177.9\")._1) {\n  println(location.countryCode)     // \"US\"\n  println(location.countryName)     // \"United States\" \n  println(location.city.get)        // \"Bellevue\" \n  println(location.regionName.get)  // \"Washington\" \n  println(location.latitude)        // \"47.620102\" \n  println(location.longitude)       // \"-122.1408\" \n}",
+      "dateUpdated": "Aug 14, 2016 2:19:42 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471138638267_817036384",
+      "id": "20160814-013718_1794518368",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\nipLookups: com.snowplowanalytics.maxmind.iplookups.IpLookups \u003d com.snowplowanalytics.maxmind.iplookups.IpLookups@4b514754\n\n\n\n\u003cconsole\u003e:45: error: method performLookupsWithoutLruCache in class IpLookups cannot be accessed in com.snowplowanalytics.maxmind.iplookups.IpLookups\n       for (location \u003c- ipLookups.performLookupsWithoutLruCache(\"98.237.177.9\")._1) {\n                                  ^\n"
+      },
+      "dateCreated": "Aug 14, 2016 1:37:18 AM",
+      "dateStarted": "Aug 14, 2016 2:19:42 AM",
+      "dateFinished": "Aug 14, 2016 2:19:42 AM",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh ",
+      "dateUpdated": "Aug 14, 2016 3:27:34 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471188454051_-1880253888",
+      "id": "20160814-152734_1883528226",
+      "dateCreated": "Aug 14, 2016 3:27:34 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Setup/Geolite",
+  "id": "2BTP2S4EE",
+  "lastReplName": {
+    "value": "sh"
+  },
+  "angularObjects": {
+    "2BV1B72ET:shared_process": [],
+    "2BVAAYQC1:shared_process": [],
+    "2BV75BX32:shared_process": [],
+    "2BS6NQ7PQ:shared_process": [],
+    "2BTYS4X14:shared_process": [],
+    "2BTFJ573Q:shared_process": [],
+    "2BTAUK3DC:shared_process": [],
+    "2BSG55HBH:shared_process": [],
+    "2BUAX2K7D:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

@@ -1,0 +1,108 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n\nWe\u0027ll use `tcpdump` to generate network traffic logs.\n\n- Mac OSX: `brew install tcpdump`\n- Debian/Ubuntu: `apt-get install tcpdump`\n- Archlinux: `pacman -S tcpdump`\n\nOnce installed, from your terminal, generate logs from your terminal app:\n\n```\n% cd \u003chowistart-spark-workflows\u003e\n% sudo tcpdump -qfn -tttt \u0027tcp[tcpflags] \u0026 tcp-push !\u003d 0\u0027 | tee data/logs/tcpdump.txt\n```\n\nInformation from `tcpdump` that appears on your terminal will also be recorded to a log-files we can load with Spark. You may need to generate some traffic (with your browser or other apps) before data appears. Hit **ctrl-c** or **command-c** when a few-hundred lines have been recorded.\n\nRunning the next paragraph should produce the first few lines of you file:",
+      "dateUpdated": "Aug 14, 2016 5:07:04 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471193784746_1364376794",
+      "id": "20160814-165624_746010266",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003cp\u003eWe\u0027ll use \u003ccode\u003etcpdump\u003c/code\u003e to generate network traffic logs.\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003eMac OSX: \u003ccode\u003ebrew install tcpdump\u003c/code\u003e\u003c/li\u003e\n\u003cli\u003eDebian/Ubuntu: \u003ccode\u003eapt-get install tcpdump\u003c/code\u003e\u003c/li\u003e\n\u003cli\u003eArchlinux: \u003ccode\u003epacman -S tcpdump\u003c/code\u003e\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eOnce installed, from your terminal, generate logs from your terminal app:\u003c/p\u003e\n\u003cpre\u003e\u003ccode\u003e% cd \u0026lt;howistart-spark-workflows\u0026gt;\n% sudo tcpdump -qfn -tttt \u0027tcp[tcpflags] \u0026amp; tcp-push !\u003d 0\u0027 | tee data/logs/tcpdump.txt\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003eInformation from \u003ccode\u003etcpdump\u003c/code\u003e that appears on your terminal will also be recorded to a log-files we can load with Spark. You may need to generate some traffic (with your browser or other apps) before data appears. Hit \u003cstrong\u003ectrl-c\u003c/strong\u003e or \u003cstrong\u003ecommand-c\u003c/strong\u003e when a few-hundred lines have been recorded.\u003c/p\u003e\n\u003cp\u003eRunning the next paragraph should produce the first few lines of you file:\u003c/p\u003e\n"
+      },
+      "dateCreated": "Aug 14, 2016 4:56:24 PM",
+      "dateStarted": "Aug 14, 2016 5:07:02 PM",
+      "dateFinished": "Aug 14, 2016 5:07:02 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh head /var/lib/data/logs/tcpdump.txt",
+      "dateUpdated": "Aug 14, 2016 5:16:22 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471194127519_-1167746910",
+      "id": "20160814-170207_797881412",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "2016-08-14 10:02:29.378089 IP 10.0.1.12.44382 \u003e 52.91.17.255.443: tcp 60\n2016-08-14 10:02:29.476313 IP 52.91.17.255.443 \u003e 10.0.1.12.44382: tcp 62\n2016-08-14 10:02:29.904477 IP 10.0.1.12.34040 \u003e 198.145.13.14.443: tcp 46\n2016-08-14 10:02:29.922223 IP 198.145.13.14.443 \u003e 10.0.1.12.34040: tcp 46\n2016-08-14 10:02:31.378442 IP 10.0.1.12.44300 \u003e 54.175.235.188.443: tcp 69\n2016-08-14 10:02:31.602268 IP 54.175.235.188.443 \u003e 10.0.1.12.44300: tcp 53\n2016-08-14 10:02:32.126488 IP 52.91.53.112.443 \u003e 10.0.1.12.46836: tcp 69\n2016-08-14 10:02:33.140893 IP 52.91.53.112.443 \u003e 10.0.1.12.46836: tcp 53\n2016-08-14 10:02:34.378023 IP 10.0.1.12.57582 \u003e 54.172.78.92.443: tcp 85\n2016-08-14 10:02:34.482764 IP 54.172.78.92.443 \u003e 10.0.1.12.57582: tcp 85\n"
+      },
+      "dateCreated": "Aug 14, 2016 5:02:07 PM",
+      "dateStarted": "Aug 14, 2016 5:16:22 PM",
+      "dateFinished": "Aug 14, 2016 5:16:22 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh ",
+      "dateUpdated": "Aug 14, 2016 5:07:19 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471194439234_-2061273418",
+      "id": "20160814-170719_806833540",
+      "dateCreated": "Aug 14, 2016 5:07:19 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Setup/TcpDump",
+  "id": "2BTEFB7HD",
+  "lastReplName": {
+    "value": "sh"
+  },
+  "angularObjects": {
+    "2BVEAUQE8:shared_process": [],
+    "2BTHD3RRR:shared_process": [],
+    "2BUM7YB7J:shared_process": [],
+    "2BUKCR5DV:shared_process": [],
+    "2BT4531V4:shared_process": [],
+    "2BVR6BUX8:shared_process": [],
+    "2BSM1ACDR:shared_process": [],
+    "2BTGNM9BZ:shared_process": [],
+    "2BTDXBNVQ:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

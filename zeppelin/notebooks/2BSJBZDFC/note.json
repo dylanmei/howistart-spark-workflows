@@ -1,0 +1,204 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n\nThere are two ways to integrate ElasticSearch with Zeppelin. The first is to use ElasticSearch\u0027s own [elasticsearch-hadoop](https://www.elastic.co/guide/en/elasticsearch/hadoop/current/reference.html) library.\n\nFirst, edit the **Spark** Interpreter and add `org.elasticsearch:elasticsearch-spark-20_2.11:5.0.0-alpha5` as a dependency. artifact. Once complete, the following paragraph should run successfully.\n\nSecond, add the following properties to the **Spark** interpreter.\n\n- `spark.es.discovery: false`\n- `spark.es.nodes: elaticsearch:9200`\n\nThe following paragraph should complete successfully:",
+      "dateUpdated": "Aug 14, 2016 2:32:18 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471125468451_-1956156101",
+      "id": "20160813-215748_1578052467",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003cp\u003eThere are two ways to integrate ElasticSearch with Zeppelin. The first is to use ElasticSearch\u0027s own \u003ca href\u003d\"https://www.elastic.co/guide/en/elasticsearch/hadoop/current/reference.html\"\u003eelasticsearch-hadoop\u003c/a\u003e library.\u003c/p\u003e\n\u003cp\u003eFirst, edit the \u003cstrong\u003eSpark\u003c/strong\u003e Interpreter and add \u003ccode\u003eorg.elasticsearch:elasticsearch-spark-20_2.11:5.0.0-alpha5\u003c/code\u003e as a dependency. artifact. Once complete, the following paragraph should run successfully.\u003c/p\u003e\n\u003cp\u003eSecond, add the following properties to the \u003cstrong\u003eSpark\u003c/strong\u003e interpreter.\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e\u003ccode\u003espark.es.discovery: false\u003c/code\u003e\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003espark.es.nodes: elaticsearch:9200\u003c/code\u003e\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eThe following paragraph should complete successfully:\u003c/p\u003e\n"
+      },
+      "dateCreated": "Aug 13, 2016 9:57:48 AM",
+      "dateStarted": "Aug 14, 2016 2:32:17 PM",
+      "dateFinished": "Aug 14, 2016 2:32:17 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \n\nimport org.elasticsearch.spark.sql._\nimport org.elasticsearch.spark.rdd._\nimport org.joda.time._\nimport org.joda.time.format._\n\ncase class Hello(id: String, timestamp: String)\n\n// write data\nval data \u003d Seq(Hello(\"world\", new DateTime().toString(ISODateTimeFormat.dateTime())))\nEsSpark.saveToEs(spark.sparkContext.parallelize(data),\n    \"hello/data\", Map(\"es.mapping.id\" -\u003e \"id\", \"es.mapping.timestamp\" -\u003e \"timestamp\"))\n\n// read data\nval df \u003d spark.sqlContext.esDF(\"hello/data\")\ndf.show()",
+      "dateUpdated": "Aug 14, 2016 3:13:03 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471125489902_1001069917",
+      "id": "20160813-215809_1006380600",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nimport org.elasticsearch.spark.sql._\n\nimport org.elasticsearch.spark.rdd._\n\nimport org.joda.time._\n\nimport org.joda.time.format._\n\ndefined class Hello\n\ndata: Seq[Hello] \u003d List(Hello(world,2016-08-14T15:13:07.022Z))\n\ndf: org.apache.spark.sql.DataFrame \u003d [id: string, timestamp: timestamp]\n+-----+--------------------+\n|   id|           timestamp|\n+-----+--------------------+\n|world|2016-08-14 15:13:...|\n+-----+--------------------+\n\n"
+      },
+      "dateCreated": "Aug 13, 2016 9:58:09 AM",
+      "dateStarted": "Aug 14, 2016 3:13:03 PM",
+      "dateFinished": "Aug 14, 2016 3:13:09 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\nThe second way to integrate ElasticSearch with Zeppelin is the **ElasticSearch* Zeppelin interpreter. This should already be configured with the following values:\n\n- `elasticsearch.cluster.name: elasticsearch`\n- `elasticsearch.host: elasticsearch`\n- `elasticsearch.port: 9300`\n\nThe following paragraph should complete successfully:",
+      "dateUpdated": "Aug 14, 2016 3:12:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471186135617_976412582",
+      "id": "20160814-144855_433005719",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003cp\u003eThe second way to integrate ElasticSearch with Zeppelin is the *\u003cem\u003eElasticSearch\u003c/em\u003e Zeppelin interpreter. This should already be configured with the following values:\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e\u003ccode\u003eelasticsearch.cluster.name: elasticsearch\u003c/code\u003e\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003eelasticsearch.host: elasticsearch\u003c/code\u003e\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003eelasticsearch.port: 9300\u003c/code\u003e\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eThe following paragraph should complete successfully:\u003c/p\u003e\n"
+      },
+      "dateCreated": "Aug 14, 2016 2:48:55 PM",
+      "dateStarted": "Aug 14, 2016 3:12:32 PM",
+      "dateFinished": "Aug 14, 2016 3:12:32 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%elasticsearch\n\nsearch /hello",
+      "dateUpdated": "Aug 14, 2016 3:13:13 PM",
+      "config": {
+        "colWidth": 11.0,
+        "graph": {
+          "mode": "table",
+          "height": 139.5,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "id",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "timestamp",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "id",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "timestamp",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471187420968_-1595598233",
+      "id": "20160814-151020_2098162795",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "id\ttimestamp\nworld\t2016-08-14T15:13:07.022Z\n"
+      },
+      "dateCreated": "Aug 14, 2016 3:10:20 PM",
+      "dateStarted": "Aug 14, 2016 3:13:13 PM",
+      "dateFinished": "Aug 14, 2016 3:13:13 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%elasticsearch ",
+      "dateUpdated": "Aug 14, 2016 3:10:35 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471187435397_1974117386",
+      "id": "20160814-151035_859142618",
+      "dateCreated": "Aug 14, 2016 3:10:35 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Setup/ElasticSearch",
+  "id": "2BSJBZDFC",
+  "lastReplName": {
+    "value": "elasticsearch"
+  },
+  "angularObjects": {
+    "2BSNXMVCR:shared_process": [],
+    "2BV33MZ1F:shared_process": [],
+    "2BU9UZQGX:shared_process": [],
+    "2BU14YPFX:shared_process": [],
+    "2BU84WZDA:shared_process": [],
+    "2BVN1VKD2:shared_process": [],
+    "2BSMXDFJ8:shared_process": [],
+    "2BV5SAZN9:shared_process": [],
+    "2BUNAX8T6:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

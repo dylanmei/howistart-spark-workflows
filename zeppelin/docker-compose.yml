@@ -1,0 +1,31 @@
+version: "2"
+services:
+  zeppelin:
+    image: dylanmei/zeppelin
+    environment:
+      ZEPPELIN_PORT: 8080
+      MASTER: local[*]
+#      SPARK_SUBMIT_OPTIONS: >-
+#        --conf spark.es.nodes=elasticsearch:9200
+#        --conf spark.es.discovery=false
+#        --repositories http://dl.bintray.com/spark-packages/maven,http://maven.snplow.com/releases
+#        --packages org.elasticsearch:elasticsearch-spark-20_2.11:5.0.0-alpha5,com.snowplowanalytics:scala-maxmind-iplookups_2.11:0.2.0
+    ports:
+      - 8080:8080
+      - 4040:4040
+    volumes:
+      - ./notebooks:/usr/zeppelin/notebook
+      - ../data:/var/lib/data
+
+  elasticsearch:
+    image: elasticsearch:2.3
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  kibana:
+    image: kibana:4.5
+    ports:
+      - 5601:5601
+    logging:
+      driver: none
