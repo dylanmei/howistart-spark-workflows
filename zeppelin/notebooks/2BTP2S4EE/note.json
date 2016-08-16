@@ -73,7 +73,7 @@
     },
     {
       "text": "%md\n\nAdd a third-party **Repository** for [maven.snplow.com](http://maven.snplow.com/releases) in Zeppelin\u0027s Interpreter configuration. *Hint: It\u0027s the gear icon in the upper-right.*\n\n- `id`: snowplow\n- `url`: http://maven.snplow.com/releases\n- `snapshot`: false\n\nEdit the **Spark** Interpreter and add `com.snowplowanalytics:scala-maxmind-iplookups_2.11:0.2.0` as a dependency. artifact. Once complete, the following paragraph should run successfully.",
-      "dateUpdated": "Aug 14, 2016 3:27:56 PM",
+      "dateUpdated": "Aug 14, 2016 3:27:56 AM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -108,8 +108,8 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%spark\n\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\nval ipLookups \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n\nfor (location \u003c- ipLookups.performLookupsWithoutLruCache(\"98.237.177.9\")._1) {\n  println(location.countryCode)     // \"US\"\n  println(location.countryName)     // \"United States\" \n  println(location.city.get)        // \"Bellevue\" \n  println(location.regionName.get)  // \"Washington\" \n  println(location.latitude)        // \"47.620102\" \n  println(location.longitude)       // \"-122.1408\" \n}",
-      "dateUpdated": "Aug 14, 2016 2:19:42 AM",
+      "text": "%spark\n\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\nval ipLookups \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n\nfor (location \u003c- ipLookups.performLookups(\"98.237.177.9\")._1) {\n  println(location.countryCode)     // \"US\"\n  println(location.countryName)     // \"United States\" \n  println(location.city.get)        // \"Bellevue\" \n  println(location.regionName.get)  // \"Washington\" \n  println(location.latitude)        // \"47.620102\" \n  println(location.longitude)       // \"-122.1408\" \n}",
+      "dateUpdated": "Aug 16, 2016 1:11:59 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -132,20 +132,33 @@
       "jobName": "paragraph_1471138638267_817036384",
       "id": "20160814-013718_1794518368",
       "result": {
-        "code": "ERROR",
+        "code": "SUCCESS",
         "type": "TEXT",
-        "msg": "\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\nipLookups: com.snowplowanalytics.maxmind.iplookups.IpLookups \u003d com.snowplowanalytics.maxmind.iplookups.IpLookups@4b514754\n\n\n\n\u003cconsole\u003e:45: error: method performLookupsWithoutLruCache in class IpLookups cannot be accessed in com.snowplowanalytics.maxmind.iplookups.IpLookups\n       for (location \u003c- ipLookups.performLookupsWithoutLruCache(\"98.237.177.9\")._1) {\n                                  ^\n"
+        "msg": "\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\nipLookups: com.snowplowanalytics.maxmind.iplookups.IpLookups \u003d com.snowplowanalytics.maxmind.iplookups.IpLookups@48ca2e77\nUS\nUnited States\nBellevue\nWashington\n47.620102\n-122.1408\n"
       },
       "dateCreated": "Aug 14, 2016 1:37:18 AM",
-      "dateStarted": "Aug 14, 2016 2:19:42 AM",
-      "dateFinished": "Aug 14, 2016 2:19:42 AM",
-      "status": "ERROR",
+      "dateStarted": "Aug 16, 2016 1:11:59 PM",
+      "dateFinished": "Aug 16, 2016 1:11:59 PM",
+      "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%sh ",
-      "dateUpdated": "Aug 14, 2016 3:27:34 PM",
-      "config": {},
+      "text": "%spark\n\nval ipLookups \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n\nval location \u003d ipLookups.performLookups(\"98.237.177.x9\") match {\n    case (Some(geo), None, None, None, None) \u003d\u003e println(\"geo \" + geo.regionName)\n    case _ \u003d\u003e None\n}\n\nprintln(location)\n",
+      "dateUpdated": "Aug 16, 2016 1:28:20 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
       "settings": {
         "params": {},
         "forms": {}
@@ -153,7 +166,29 @@
       "apps": [],
       "jobName": "paragraph_1471188454051_-1880253888",
       "id": "20160814-152734_1883528226",
-      "dateCreated": "Aug 14, 2016 3:27:34 PM",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nipLookups: com.snowplowanalytics.maxmind.iplookups.IpLookups \u003d com.snowplowanalytics.maxmind.iplookups.IpLookups@5689d00e\n\nlocation: Any \u003d None\nNone\n"
+      },
+      "dateCreated": "Aug 14, 2016 3:27:34 AM",
+      "dateStarted": "Aug 16, 2016 1:28:20 PM",
+      "dateFinished": "Aug 16, 2016 1:28:21 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark ",
+      "dateUpdated": "Aug 16, 2016 1:13:41 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471353221326_1027810858",
+      "id": "20160816-131341_1963249218",
+      "dateCreated": "Aug 16, 2016 1:13:41 PM",
       "status": "READY",
       "progressUpdateIntervalMs": 500
     }
@@ -161,18 +196,18 @@
   "name": "Setup/Geolite",
   "id": "2BTP2S4EE",
   "lastReplName": {
-    "value": "sh"
+    "value": "spark"
   },
   "angularObjects": {
-    "2BV1B72ET:shared_process": [],
-    "2BVAAYQC1:shared_process": [],
-    "2BV75BX32:shared_process": [],
-    "2BS6NQ7PQ:shared_process": [],
-    "2BTYS4X14:shared_process": [],
-    "2BTFJ573Q:shared_process": [],
-    "2BTAUK3DC:shared_process": [],
-    "2BSG55HBH:shared_process": [],
-    "2BUAX2K7D:shared_process": []
+    "2BV243892:shared_process": [],
+    "2BUFW961K:shared_process": [],
+    "2BW63SUXE:shared_process": [],
+    "2BVHZMGGD:shared_process": [],
+    "2BVGC7XJ2:shared_process": [],
+    "2BVEDXHCB:shared_process": [],
+    "2BV4U2ARY:shared_process": [],
+    "2BVYPTTNB:shared_process": [],
+    "2BVW9F1TD:shared_process": []
   },
   "config": {
     "looknfeel": "default"
