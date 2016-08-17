@@ -1,8 +1,8 @@
 {
   "paragraphs": [
     {
-      "text": "%spark \n\nimport org.apache.spark.sql._\nimport org.apache.spark.sql.types._\n\n// example log line\n// 2016-08-14 10:02:29.378089 IP 10.0.1.12.44382 \u003e 52.91.17.255.443: tcp 60\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/logs/tcpdump.txt\")\nval fields \u003d  Array(\n    StructField(\"datetime\", StringType, false),\n    StructField(\"ip\", StringType, false),\n    StructField(\"len\", IntegerType, false))\n\nval rows \u003d lines\n  .map(_.split(\" \"))\n  .filter(_.size \u003d\u003d 8)\n  .map(attrs \u003d\u003e Row(attrs(0) + \"T\" + attrs(1), attrs(5), attrs(7).toInt))\n\nval df \u003d spark.createDataFrame(rows, StructType(fields))\ndf.createOrReplaceTempView(\"tcpdump\")",
-      "dateUpdated": "Aug 16, 2016 12:54:10 PM",
+      "text": "%spark \n\nimport org.apache.spark.sql._\nimport org.apache.spark.sql.types._\n\n// example log line\n// 2016-08-14 10:02:29.378089 IP 10.0.1.12.44382 \u003e 52.91.17.255.443: tcp 60\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/tcpdump.txt\")\nval fields \u003d  Array(\n    StructField(\"datetime\", StringType, false),\n    StructField(\"ip\", StringType, false),\n    StructField(\"len\", IntegerType, false))\n\nval metrics \u003d lines\n  .map(_.split(\" \"))\n  .filter(_.size \u003d\u003d 8)\n  .map(attrs \u003d\u003e Row(attrs(0) + \"T\" + attrs(1), attrs(5), attrs(7).toInt))\n\nval df \u003d spark.createDataFrame(metrics, StructType(fields))\ndf.createOrReplaceTempView(\"tcpdump\")",
+      "dateUpdated": "Aug 17, 2016 1:38:46 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -27,11 +27,11 @@
       "result": {
         "code": "SUCCESS",
         "type": "TEXT",
-        "msg": "\nimport org.apache.spark.sql._\n\nimport org.apache.spark.sql.types._\n\nlines: org.apache.spark.rdd.RDD[String] \u003d /var/lib/data/logs/tcpdump.txt MapPartitionsRDD[17] at textFile at \u003cconsole\u003e:43\n\nfields: Array[org.apache.spark.sql.types.StructField] \u003d Array(StructField(datetime,StringType,false), StructField(ip,StringType,false), StructField(len,IntegerType,false))\n\nrows: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] \u003d MapPartitionsRDD[20] at map at \u003cconsole\u003e:48\n\ndf: org.apache.spark.sql.DataFrame \u003d [datetime: string, ip: string ... 1 more field]\n"
+        "msg": "\nimport org.apache.spark.sql._\n\nimport org.apache.spark.sql.types._\n\nlines: org.apache.spark.rdd.RDD[String] \u003d /var/lib/data/tcpdump.txt MapPartitionsRDD[21] at textFile at \u003cconsole\u003e:55\n\nfields: Array[org.apache.spark.sql.types.StructField] \u003d Array(StructField(datetime,StringType,false), StructField(ip,StringType,false), StructField(len,IntegerType,false))\n\nmetrics: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] \u003d MapPartitionsRDD[24] at map at \u003cconsole\u003e:60\n\ndf: org.apache.spark.sql.DataFrame \u003d [datetime: string, ip: string ... 1 more field]\n"
       },
       "dateCreated": "Aug 14, 2016 5:20:57 AM",
-      "dateStarted": "Aug 16, 2016 12:54:10 PM",
-      "dateFinished": "Aug 16, 2016 12:54:13 PM",
+      "dateStarted": "Aug 17, 2016 1:38:46 PM",
+      "dateFinished": "Aug 17, 2016 1:38:49 PM",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -73,8 +73,8 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%spark\n\nimport org.apache.spark.sql._\nimport org.apache.spark.sql.types._\n\n// example log line\n// 2016-08-14 10:02:29.378089 IP 10.0.1.12.44382 \u003e 52.91.17.255.443: tcp 60\n\ncase class Metric(timestamp: String, ip: String, port: Int, len: Int)\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/logs/tcpdump.txt\")\nval rows \u003d lines\n  .map(_.split(\" \"))\n  .filter(_.size \u003d\u003d 8)\n  .map(attrs \u003d\u003e {\n        val timestamp \u003d attrs(0) + \"T\" + attrs(1)\n        val remote \u003d attrs(5)\n        val (ip, port) \u003d remote.splitAt(remote.lastIndexOf(\".\"))\n\n        Metric(timestamp,\n            ip.replaceAll(\"\\\\.\", \"-\"),\n            port.stripPrefix(\".\").stripSuffix(\":\").toInt,\n            attrs(7).toInt)\n     })\n\nval df \u003d spark.createDataFrame(rows)\ndf.createOrReplaceTempView(\"tcpdump\")",
-      "dateUpdated": "Aug 16, 2016 12:56:42 PM",
+      "text": "%spark\n\nimport org.apache.spark.sql._\nimport org.apache.spark.sql.types._\n\n// example log line\n// 2016-08-14 10:02:29.378089 IP 10.0.1.12.44382 \u003e 52.91.17.255.443: tcp 60\n\ncase class Metric(timestamp: String, ip: String, port: Int, len: Int)\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/tcpdump.txt\")\nval metrics \u003d lines\n  .map(_.split(\" \"))\n  .filter(_.size \u003d\u003d 8)\n  .map(attrs \u003d\u003e {\n        val timestamp \u003d attrs(0) + \"T\" + attrs(1)\n        val remote \u003d attrs(5)\n        val (ip, port) \u003d remote.splitAt(remote.lastIndexOf(\".\"))\n\n        Metric(timestamp,\n            ip.replaceAll(\"\\\\.\", \"-\"),\n            port.stripPrefix(\".\").stripSuffix(\":\").toInt,\n            attrs(7).toInt)\n     })\n\nval df \u003d spark.createDataFrame(metrics)\ndf.createOrReplaceTempView(\"tcpdump\")",
+      "dateUpdated": "Aug 17, 2016 1:38:45 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -179,8 +179,8 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%spark\n\nimport org.apache.spark.sql._\nimport org.apache.spark.sql.types._\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\ncase class Metric(timestamp: String, ip: String, port: Int, city: String, country: String, location: String, len: Int)\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/logs/tcpdump.txt\")\nval rows \u003d lines\n  .map(_.split(\" \"))\n  .filter(_.size \u003d\u003d 8)\n  .map(attrs \u003d\u003e {\n        val timestamp \u003d attrs(0) + \"T\" + attrs(1)\n        val remote \u003d attrs(5)\n        val (ip, port) \u003d remote.splitAt(remote.lastIndexOf(\".\"))\n\n        val ipl \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n        \n        val (city, country, loc) \u003d ipl.performLookups(ip)._1 match {\n            case Some(geo) \u003d\u003e (geo.city, Option(geo.countryName), Option(geo.latitude + \",\" + geo.longitude))\n            case _ \u003d\u003e (None, None, None)\n        }\n        \n        Metric(timestamp,\n            ip.replaceAll(\"\\\\.\", \"-\"),\n            port.stripPrefix(\".\").stripSuffix(\":\").toInt,\n            city.getOrElse(\"\"),\n            country.getOrElse(\"\"),\n            loc.getOrElse(\"0,0\"),\n            attrs(7).toInt)\n     })\n\nval df \u003d spark.createDataFrame(rows)\ndf.createOrReplaceTempView(\"tcpdump\")",
-      "dateUpdated": "Aug 16, 2016 5:37:47 PM",
+      "text": "%spark\n\nimport org.apache.spark.sql._\nimport org.apache.spark.sql.types._\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\ncase class Metric(timestamp: String, ip: String, port: Int, city: String, country: String, location: String, len: Int)\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/tcpdump.txt\")\nval metrics \u003d lines\n  .map(_.split(\" \"))\n  .filter(_.size \u003d\u003d 8)\n  .map(attrs \u003d\u003e {\n        val timestamp \u003d attrs(0) + \"T\" + attrs(1)\n        val remote \u003d attrs(5)\n        val (ip, port) \u003d remote.splitAt(remote.lastIndexOf(\".\"))\n\n        val ipl \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n        \n        val (city, country, loc) \u003d ipl.performLookups(ip)._1 match {\n            case Some(geo) \u003d\u003e (geo.city, Option(geo.countryName), Option(geo.latitude + \",\" + geo.longitude))\n            case _ \u003d\u003e (None, None, None)\n        }\n        \n        Metric(timestamp,\n            ip.replaceAll(\"\\\\.\", \"-\"),\n            port.stripPrefix(\".\").stripSuffix(\":\").toInt,\n            city.getOrElse(\"\"),\n            country.getOrElse(\"\"),\n            loc.getOrElse(\"0,0\"),\n            attrs(7).toInt)\n     })\n\nval df \u003d spark.createDataFrame(metrics)\ndf.createOrReplaceTempView(\"tcpdump\")",
+      "dateUpdated": "Aug 17, 2016 1:38:45 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -273,15 +273,11 @@
       "apps": [],
       "jobName": "paragraph_1471361328814_970081481",
       "id": "20160816-152848_63847801",
-      "result": {
-        "code": "SUCCESS",
-        "type": "ANGULAR",
-        "msg": "\u003clink rel\u003d\"stylesheet\" href\u003d\"https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.css\" /\u003e\n\u003cdiv id\u003d\"map\" style\u003d\"height: 400px; width: 100%\"\u003e\u003c/div\u003e\n\n\u003cscript type\u003d\"text/javascript\"\u003e\nfunction initMap() {\n    var map \u003d L.map(\u0027map\u0027).setView([30.00, -30.00], 2)\n\n    L.tileLayer(\u0027http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\u0027, {\n        attribution: \u0027Map data \u0026copy; \u003ca href\u003d\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e contributors\u0027,\n        maxZoom: 12, minZoom: 2\n    }).addTo(map)\n\n    var markers \u003d L.layerGroup().addTo(map);\n    var el \u003d angular.element($(\u0027#map\u0027).parent(\u0027.ng-scope\u0027));\n    angular.element(el).ready(function() {\n        window.locationWatcher \u003d el.scope().compiledScope.$watch(\u0027tcpdump\u0027, function(newValue, oldValue) {\n            markers.clearLayers() //-- if you want to only show new data clear the layer first\n            angular.forEach(newValue, function(latlon) {\n                if (latlon.length \u003e 0) {\n                    console.log(latlon)\n                    L.marker(latlon.split(\",\")).addTo(markers)\n                }\n            })\n        })\n    })\n}\n\nif (window.locationWatcher) {\n    // clear existing watcher otherwise we\u0027ll have duplicates\n    window.locationWatcher();\n}\n\n// ensure we only load the script once, seems to cause issues otherwise\nif (window.L) {\n    initMap();\n} else {\n    console.log(\u0027Loading Leaflet library\u0027);\n    var sc \u003d document.createElement(\u0027script\u0027);\n    sc.type \u003d \u0027text/javascript\u0027;\n    sc.src \u003d \u0027https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js\u0027;\n    sc.onload \u003d initMap;\n    sc.onerror \u003d function(err) { alert(err); }\n    document.getElementsByTagName(\u0027head\u0027)[0].appendChild(sc);\n}\n\u003c/script\u003e"
-      },
       "dateCreated": "Aug 16, 2016 3:28:48 PM",
       "dateStarted": "Aug 16, 2016 5:37:37 PM",
       "dateFinished": "Aug 16, 2016 5:37:37 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
@@ -308,15 +304,11 @@
       "apps": [],
       "jobName": "paragraph_1471355443352_171348295",
       "id": "20160816-135043_427031445",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "\nlocations: org.apache.spark.rdd.RDD[String] \u003d MapPartitionsRDD[172] at map at \u003cconsole\u003e:208\n"
-      },
       "dateCreated": "Aug 16, 2016 1:50:43 PM",
       "dateStarted": "Aug 16, 2016 5:37:59 PM",
       "dateFinished": "Aug 16, 2016 5:38:37 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
@@ -338,48 +330,11 @@
   "name": "1. TcpDump with Spark SQL",
   "id": "2BSX6Z8SM",
   "lastReplName": {
-    "value": "sql"
+    "value": "spark"
   },
   "angularObjects": {
     "2BV243892:shared_process": [],
-    "2BUFW961K:shared_process": [
-      {
-        "name": "tcpdump",
-        "object": [
-          "47.499603,19.057404",
-          "47.6062,-122.3321",
-          "45.5,-73.5833",
-          "51.2993,9.490997",
-          "37.424896,-122.0074",
-          "37.3394,-121.895004",
-          "48.8582,2.3386993",
-          "55.7386,37.606796",
-          "42.986404,-78.7279",
-          "47.6727,-122.1873",
-          "43.339905,5.9761963",
-          "37.7697,-122.393295",
-          "45.8696,-119.688",
-          "59.776093,30.661407",
-          "43.631897,-79.3716",
-          "45.503998,-73.5747",
-          "53.3331,-6.2489014",
-          "45.500504,-73.5684",
-          "42.305603,-77.6315",
-          "39.085297,-77.6452",
-          "35.9767,-78.5544",
-          "1.2931061,103.855804",
-          "52.350006,4.9167023",
-          "40.714294,-74.006",
-          "51.533295,0.69999695",
-          "37.515503,-121.896194",
-          "52.382507,4.6242065",
-          "22.533295,114.1333",
-          "37.774902,-122.4194",
-          "41.874496,-87.6503"
-        ],
-        "noteId": "2BSX6Z8SM"
-      }
-    ],
+    "2BUFW961K:shared_process": [],
     "2BW63SUXE:shared_process": [],
     "2BVHZMGGD:shared_process": [],
     "2BVGC7XJ2:shared_process": [],
