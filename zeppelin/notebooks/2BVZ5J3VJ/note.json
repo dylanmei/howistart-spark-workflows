@@ -1,8 +1,8 @@
 {
   "paragraphs": [
     {
-      "text": "%spark\n\nimport org.elasticsearch.spark.rdd._\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\ncase class Metric(timestamp: String, ip: String, port: Int, city: String, country: String, location: Array[Float], len: Int)\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/tcpdump.txt\")\nval metrics \u003d lines\n  .map(_.split(\" \"))\n  .filter(_.size \u003d\u003d 8)\n  .map(attrs \u003d\u003e {\n        val timestamp \u003d attrs(0) + \"T\" + attrs(1)\n        val remote \u003d attrs(5)\n        val (ip, port) \u003d remote.splitAt(remote.lastIndexOf(\".\"))\n\n        val ipl \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n        \n        val (city, country, lat:Float, lon:Float) \u003d ipl.performLookups(ip)._1 match {\n            case Some(geo) \u003d\u003e (geo.city, Option(geo.countryName), geo.latitude, geo.longitude)\n            case _ \u003d\u003e (None, None, 0, 0)\n        }\n        \n        Metric(timestamp,\n            ip,\n            port.stripPrefix(\".\").stripSuffix(\":\").toInt,\n            city.getOrElse(\"\"),\n            country.getOrElse(\"\"),\n            Array(lon, lat),\n            attrs(7).toInt)\n     })\n\nEsSpark.saveToEs(metrics, \"tcpdump/metric\", Map(\"es.mapping.timestamp\" -\u003e \"timestamp\"))",
-      "dateUpdated": "Aug 17, 2016 2:26:48 PM",
+      "text": "%spark\n\nimport org.joda.time._\nimport org.joda.time.format._\nimport org.elasticsearch.spark.rdd._\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\ncase class Metric(timestamp: String, ip: String, port: Int, city: String, country: String, location: Array[Float], len: Int)\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/tcpdump.txt\")\nval metrics \u003d lines\n  .map(_.split(\" \"))\n  .filter(_.size \u003d\u003d 8)\n  .map(attrs \u003d\u003e {\n        val timestamp \u003d new DateTime(attrs(0) + \"T\" + attrs(1), DateTimeZone.forID(\"America/Los_Angeles\"))\n        val remote \u003d attrs(5)\n        val (ip, port) \u003d remote.splitAt(remote.lastIndexOf(\".\"))\n\n        val ipl \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n        \n        val (city, country, lat:Float, lon:Float) \u003d ipl.performLookups(ip)._1 match {\n            case Some(geo) \u003d\u003e (geo.city, Option(geo.countryName), geo.latitude, geo.longitude)\n            case _ \u003d\u003e (None, None, 0, 0)\n        }\n        \n        Metric(timestamp.toString(ISODateTimeFormat.dateTime()),\n            ip,\n            port.stripPrefix(\".\").stripSuffix(\":\").toInt,\n            city.getOrElse(\"\"),\n            country.getOrElse(\"\"),\n            Array(lon, lat),\n            attrs(7).toInt)\n     })\n\nEsSpark.saveToEs(metrics, \"tcpdump/metric\", Map(\"es.mapping.timestamp\" -\u003e \"timestamp\"))",
+      "dateUpdated": "Aug 18, 2016 2:18:53 AM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -24,24 +24,20 @@
       "apps": [],
       "jobName": "paragraph_1471440415262_-1417513646",
       "id": "20160817-132655_1844716700",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "\nimport org.elasticsearch.spark.rdd._\n\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\ndefined class Metric\n\nlines: org.apache.spark.rdd.RDD[String] \u003d /var/lib/data/tcpdump.txt MapPartitionsRDD[62] at textFile at \u003cconsole\u003e:107\n\nmetrics: org.apache.spark.rdd.RDD[Metric] \u003d MapPartitionsRDD[65] at map at \u003cconsole\u003e:114\n"
-      },
       "dateCreated": "Aug 17, 2016 1:26:55 PM",
-      "dateStarted": "Aug 17, 2016 2:26:48 PM",
-      "dateFinished": "Aug 17, 2016 2:27:18 PM",
+      "dateStarted": "Aug 18, 2016 2:18:53 AM",
+      "dateFinished": "Aug 18, 2016 2:19:13 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%elasticsearch\nsearch /tcpdump",
-      "dateUpdated": "Aug 17, 2016 2:30:41 PM",
+      "text": "%elasticsearch\n\nsearch /tcpdump",
+      "dateUpdated": "Aug 18, 2016 2:24:06 AM",
       "config": {
         "colWidth": 12.0,
         "graph": {
-          "mode": "pieChart",
+          "mode": "table",
           "height": 300.0,
           "optionOpen": false,
           "keys": [
@@ -82,26 +78,111 @@
         "helium": {}
       },
       "settings": {
-        "params": {},
+        "params": {
+          "date": "",
+          "size": "99",
+          "limit": "25"
+        },
         "forms": {}
       },
       "apps": [],
       "jobName": "paragraph_1471440828232_898468417",
       "id": "20160817-133348_1687074662",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TABLE",
-        "msg": "city\tcountry\tip\tlen\tlocation[0]\tlocation[1]\tport\ttimestamp\n\tCanada\t192.131.44.94\t4\t-79.3716\t43.631897\t4001\t2016-08-16T05:49:33.323505\nSan Francisco\tUnited States\t104.236.176.52\t213\t-122.4194\t37.774902\t4001\t2016-08-16T05:49:33.323591\n\tUnited States\t13.66.231.207\t213\t-122.3321\t47.6062\t4001\t2016-08-16T05:49:33.323595\nSaint Petersburg\tRussian Federation\t195.190.112.134\t4\t30.661407\t59.776093\t4001\t2016-08-16T05:49:33.323638\nSunnyvale\tUnited States\t71.204.170.241\t213\t-122.0074\t37.424896\t4001\t2016-08-16T05:49:33.323931\nLa Roquebrussanne\tFrance\t109.20.132.214\t213\t5.9761963\t43.339905\t32814\t2016-08-16T05:49:33.323938\nSan Francisco\tUnited States\t104.131.131.82\t422\t-122.4194\t37.774902\t4001\t2016-08-16T05:49:33.324135\n\tFrance\t91.121.163.56\t213\t2.3386993\t48.8582\t4001\t2016-08-16T05:49:33.324138\nSaint Petersburg\tRussian Federation\t37.144.79.28\t528\t30.661407\t59.776093\t32513\t2016-08-16T05:49:33.337651\nDublin\tIreland\t52.209.239.213\t44\t-6.2489014\t53.3331\t4001\t2016-08-16T05:49:33.338190\n"
-      },
       "dateCreated": "Aug 17, 2016 1:33:48 PM",
-      "dateStarted": "Aug 17, 2016 2:28:39 PM",
-      "dateFinished": "Aug 17, 2016 2:28:39 PM",
+      "dateStarted": "Aug 18, 2016 2:20:03 AM",
+      "dateFinished": "Aug 18, 2016 2:20:03 AM",
       "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%elasticsearch \n\nsize 100\nsearch /tcpdump Mountain",
+      "dateUpdated": "Aug 18, 2016 1:48:18 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "city",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "country",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "city",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "country",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471484413789_-1062667441",
+      "id": "20160818-014013_2121840418",
+      "dateCreated": "Aug 18, 2016 1:40:13 AM",
+      "dateStarted": "Aug 18, 2016 1:48:19 AM",
+      "dateFinished": "Aug 18, 2016 1:48:19 AM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%elasticsearch\n\nsearch /tcpdump {\n    \"query\": {\n        \"filtered\": {\n            \"filter\": {\n                \"range\": {\n                    \"timestamp\": {\n                        \"gte\": \"2016-08-17T00:00:00\"\n                    }\n                }\n            }\n        }\n    }\n}",
+      "dateUpdated": "Aug 18, 2016 2:19:46 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1471484386376_-2067124226",
+      "id": "20160818-013946_1904810173",
+      "dateCreated": "Aug 18, 2016 1:39:46 AM",
+      "dateStarted": "Aug 18, 2016 2:19:46 AM",
+      "dateFinished": "Aug 18, 2016 2:19:46 AM",
+      "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sh curl -is -XDELETE http://elasticsearch:9200/tcpdump",
-      "dateUpdated": "Aug 17, 2016 2:26:14 PM",
+      "dateUpdated": "Aug 18, 2016 1:45:01 AM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -123,20 +204,16 @@
       "apps": [],
       "jobName": "paragraph_1471441185184_-1586702994",
       "id": "20160817-133945_1388408306",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset\u003dUTF-8\r\nContent-Length: 21\r\n\r\n{\"acknowledged\":true}"
-      },
       "dateCreated": "Aug 17, 2016 1:39:45 PM",
-      "dateStarted": "Aug 17, 2016 2:26:14 PM",
-      "dateFinished": "Aug 17, 2016 2:26:14 PM",
+      "dateStarted": "Aug 18, 2016 1:45:01 AM",
+      "dateFinished": "Aug 18, 2016 1:45:01 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sh curl -is -XPUT http://elasticsearch:9200/tcpdump -d \u0027{\n  \"mappings\": {\n    \"metric\": {\n      \"properties\": {\n        \"location\": {\n          \"type\": \"geo_point\"\n        }\n      }\n    }\n  }\n}\u0027",
-      "dateUpdated": "Aug 17, 2016 2:26:45 PM",
+      "dateUpdated": "Aug 18, 2016 1:45:10 AM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -157,15 +234,11 @@
       "apps": [],
       "jobName": "paragraph_1471441633295_1913588136",
       "id": "20160817-134713_454116093",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset\u003dUTF-8\r\nContent-Length: 21\r\n\r\n{\"acknowledged\":true}"
-      },
       "dateCreated": "Aug 17, 2016 1:47:13 PM",
-      "dateStarted": "Aug 17, 2016 2:26:45 PM",
-      "dateFinished": "Aug 17, 2016 2:26:45 PM",
+      "dateStarted": "Aug 18, 2016 1:45:10 AM",
+      "dateFinished": "Aug 18, 2016 1:45:10 AM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
