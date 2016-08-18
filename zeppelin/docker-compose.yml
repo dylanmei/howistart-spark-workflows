@@ -15,6 +15,7 @@ services:
       - 4040:4040
     volumes:
       - ./notebooks:/usr/zeppelin/notebook
+      - ../geo:/var/lib/geo
       - ../data:/var/lib/data
 
   elasticsearch:

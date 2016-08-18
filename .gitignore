@@ -1,6 +1,7 @@
+geo/*.*
 data/*.*
 data/**/*.*
+spark/target/*
 spark/project/*
 !spark/project/plugins.sbt
 !spark/project/build.properties
-spark/target/*

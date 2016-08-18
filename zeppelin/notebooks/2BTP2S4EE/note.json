@@ -37,7 +37,7 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%sh\n\ncd /var/lib/data/geo\nif [ ! -f GeoLiteCity.dat ]; then\n    curl -s -O http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz\n    gzip -d GeoLiteCity.dat.gz\nfi\n",
+      "text": "%sh\n\ncd /var/lib/geo\nif [ ! -f GeoLiteCity.dat ]; then\n    curl -s -O http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz\n    gzip -d GeoLiteCity.dat.gz\nfi\n",
       "dateUpdated": "Aug 14, 2016 1:57:26 AM",
       "config": {
         "colWidth": 12.0,
@@ -108,7 +108,7 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%spark\n\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\nval ipLookups \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n\nfor (location \u003c- ipLookups.performLookups(\"98.237.177.9\")._1) {\n  println(location.countryCode)     // \"US\"\n  println(location.countryName)     // \"United States\" \n  println(location.city.get)        // \"Bellevue\" \n  println(location.regionName.get)  // \"Washington\" \n  println(location.latitude)        // \"47.620102\" \n  println(location.longitude)       // \"-122.1408\" \n}",
+      "text": "%spark\n\nimport com.snowplowanalytics.maxmind.iplookups.IpLookups\n\nval ipLookups \u003d IpLookups(geoFile \u003d Some(\"/var/lib/geo/GeoLiteCity.dat\"))\n\nfor (location \u003c- ipLookups.performLookups(\"98.237.177.9\")._1) {\n  println(location.countryCode)     // \"US\"\n  println(location.countryName)     // \"United States\" \n  println(location.city.get)        // \"Bellevue\" \n  println(location.regionName.get)  // \"Washington\" \n  println(location.latitude)        // \"47.620102\" \n  println(location.longitude)       // \"-122.1408\" \n}",
       "dateUpdated": "Aug 16, 2016 1:11:59 PM",
       "config": {
         "colWidth": 12.0,
@@ -143,7 +143,7 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%spark\n\nval ipLookups \u003d IpLookups(geoFile \u003d Some(\"/var/lib/data/geo/GeoLiteCity.dat\"))\n\nval location \u003d ipLookups.performLookups(\"98.237.177.x9\") match {\n    case (Some(geo), None, None, None, None) \u003d\u003e println(\"geo \" + geo.regionName)\n    case _ \u003d\u003e None\n}\n\nprintln(location)\n",
+      "text": "%spark\n\nval ipLookups \u003d IpLookups(geoFile \u003d Some(\"/var/lib/geo/GeoLiteCity.dat\"))\n\nval location \u003d ipLookups.performLookups(\"98.237.177.x9\") match {\n    case (Some(geo), None, None, None, None) \u003d\u003e println(\"geo \" + geo.regionName)\n    case _ \u003d\u003e None\n}\n\nprintln(location)\n",
       "dateUpdated": "Aug 16, 2016 1:28:20 PM",
       "config": {
         "colWidth": 12.0,
