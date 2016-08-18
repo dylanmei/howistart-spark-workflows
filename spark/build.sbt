@@ -2,7 +2,7 @@ name := "howistart-spark"
 
 organization := "howistart"
 
-assemblyJarName in assembly := "howistart.jar"
+assemblyJarName in assembly := "howistart-spark.jar"
 
 /* scala versions and options */
 scalaVersion := "2.11.8"
