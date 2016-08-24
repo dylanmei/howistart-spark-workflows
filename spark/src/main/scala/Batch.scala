@@ -1,28 +1,20 @@
-package howistart
+package howistart.batch
 
 import org.apache.spark._
-import org.joda.time._
+import org.apache.spark.streaming._
+import org.rogach.scallop._
+import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format._
 import com.snowplowanalytics.maxmind.iplookups.IpLookups
 import org.elasticsearch.spark.rdd._
 
 object TcpDump {
+
   case class Metric(timestamp: String, ip: String, port: Int, city: String, country: String, location: Array[Float], len: Int)
 
-  def main(args: Array[String]) {
-    println("Hello Spark!")
-    val opts = new Opts(args)
-
-    val conf = new SparkConf().setAppName("TcpDump Batch")
-    val sc = new SparkContext(conf)
-
-    TcpDump.run(sc, opts)
-    sc.stop()
-  }
-
   def run(sc: SparkContext, opts: Opts): Unit = {
-    var geoPath = opts.geoPath().toString
-    val lines = sc.textFile(opts.dumpPath().toString)
+    val geoPath = opts.geoPath().toString
+    val lines = sc.textFile("file://" + opts.dumpPath().toString)
     val metrics = lines
       .map(_.split(" "))
       .filter(_.size == 8)
@@ -48,5 +40,27 @@ object TcpDump {
        })
 
     EsSpark.saveToEs(metrics, "tcpdump/metric", Map("es.mapping.timestamp" -> "timestamp"))
+    sc.stop()
+  }
+
+  class Opts(arguments: Seq[String]) extends ScallopConf(arguments) {
+    val geoPath = opt[java.nio.file.Path]("geodb")
+    validatePathExists(geoPath)
+
+    val dumpPath = opt[java.nio.file.Path]("tcpdump")
+    validatePathExists(dumpPath)
+
+    verify()
+  }
+
+  def main(args: Array[String]) {
+    println("Hello Spark!")
+
+    val opts = new Opts(args)
+    val conf = new SparkConf()
+       .setAppName("howistart spark app")
+
+    val sc = new SparkContext(conf)
+    TcpDump.run(sc, opts)
   }
 }

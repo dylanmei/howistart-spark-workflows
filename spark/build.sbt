@@ -29,6 +29,7 @@ resolvers += "SnowPlow Repo" at "http://maven.snplow.com/releases/"
 libraryDependencies ++= Seq (
   "org.apache.spark" %% "spark-core" % "2.0.0" % "provided",
   "org.apache.spark" %% "spark-sql" % "2.0.0" % "provided",
+  "org.apache.spark" %% "spark-streaming" % "2.0.0" % "provided",
   "joda-time" % "joda-time" % "2.9.4" % "provided",
   "org.rogach" %% "scallop" % "2.0.1",
   "com.snowplowanalytics"  %% "scala-maxmind-iplookups"  % "0.2.0",
