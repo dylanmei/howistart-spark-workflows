@@ -14,11 +14,10 @@ object TcpDump {
   def run(sc: SparkContext, opts: Opts): Unit = {
     val geoPath = opts.geoPath().toString
     val ssc = new StreamingContext(sc, Seconds(20))
-    //val stream = ssc.textFileStream(opts.dumpPath().toString)
-    //val stream = ssc.socketTextStream("localhost", 9999)
-    //stream.foreachRDD(lines => {
-    //  lines.foreach(println)
-    //})
+    val stream = ssc.textFileStream(opts.dumpPath().toString)
+    stream.foreachRDD(lines => {
+      lines.foreach(println)
+    })
 
     ssc.start()
     ssc.awaitTermination()
@@ -27,6 +26,10 @@ object TcpDump {
   class Opts(arguments: Seq[String]) extends ScallopConf(arguments) {
     val geoPath = opt[java.nio.file.Path]("geodb")
     validatePathExists(geoPath)
+
+    val dumpPath = opt[java.nio.file.Path]("tcpdump")
+    validatePathExists(dumpPath)
+
     verify()
   }
 

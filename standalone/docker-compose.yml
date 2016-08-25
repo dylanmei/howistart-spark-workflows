@@ -1,4 +1,7 @@
 version: "2"
+networks:
+  spark:
+    driver: bridge
 services:
   master:
     image: gettyimages/spark:2.0.0-hadoop-2.7
@@ -14,6 +17,7 @@ services:
         -Dspark.blockManager.port=7005
         -Dspark.executor.port=7006
         -Dspark.port.maxRetries=4
+    networks: [spark]
     expose:
       - 7002
       - 7003
@@ -43,6 +47,7 @@ services:
         -Dspark.blockManager.port=17005
         -Dspark.executor.port=17006
         -Dspark.port.maxRetries=4
+    networks: [spark]
     expose:
       - 17000
       - 17002
@@ -58,12 +63,14 @@ services:
 
   elasticsearch:
     image: elasticsearch:2.3
+    networks: [spark]
     ports:
       - 9200:9200
       - 9300:9300
 
   kibana:
     image: kibana:4.5
+    networks: [spark]
     ports:
       - 5601:5601
     logging:
