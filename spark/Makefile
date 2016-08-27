@@ -50,7 +50,9 @@ define TEMPLATE
 	"mappings": {
 		"_default_": {
 			"properties": {
-				"location": { "type": "geo_point" }
+				"location": { "type": "geo_point" },
+				"city": { "type": "string", "index": "not_analyzed" },
+				"country": { "type": "string", "index": "not_analyzed" }
 			}
 		}
 	}
