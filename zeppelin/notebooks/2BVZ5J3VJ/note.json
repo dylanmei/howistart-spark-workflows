@@ -1,8 +1,8 @@
 {
   "paragraphs": [
     {
-      "text": "%spark\n\nimport org.elasticsearch.spark.rdd._\n\ncase class Metric(timestamp: String, ip: String, port: Int, len: Int, city: String \u003d \"\", country: String \u003d \"\", location: Array[Float] \u003d Array(0, 0))\n\nclass MetricBuilder(val geodb: String) {\n    import org.joda.time.format._\n    import org.joda.time.{DateTime, DateTimeZone}\n    import com.snowplowanalytics.maxmind.iplookups.IpLookups\n    \n    def build(line: String): Metric \u003d {\n        val attrs \u003d line.split(\" \")\n        if (attrs.size \u003c 8) {\n            return new Metric(\"\", \"\", 0, 0)\n        }\n\n        val datetime \u003d new DateTime(attrs(0) + \"T\" + attrs(1), DateTimeZone.forID(\"America/Los_Angeles\"))\n        val timestamp \u003d datetime.toString(ISODateTimeFormat.dateTime())\n\n        val remote \u003d attrs(5)\n        val (ip, port) \u003d remote.splitAt(remote.lastIndexOf(\".\"))\n\n        val ipl \u003d IpLookups(geoFile \u003d Some(geodb))\n        val (city, country, lat:Float, lon:Float) \u003d ipl.performLookups(ip)._1 match {\n            case Some(geo) \u003d\u003e (geo.city, Option(geo.countryName), geo.latitude, geo.longitude)\n            case _ \u003d\u003e (None, None, 0, 0)\n        }\n\n        return Metric(timestamp, ip, port.stripPrefix(\".\").stripSuffix(\":\").toInt,\n            attrs(7).toInt, city.getOrElse(\"\"), country.getOrElse(\"\"), Array(lon, lat))\n    }\n}\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/tcpdump.txt\")\nval metrics \u003d lines\n    .map(line \u003d\u003e new MetricBuilder(\"/var/lib/geo/GeoLiteCity.dat\").build(line))\n    .filter(metric \u003d\u003e metric.len \u003e 0)\n\nEsSpark.saveToEs(metrics, \"tcpdump/metric\", Map(\"es.mapping.timestamp\" -\u003e \"timestamp\"))",
-      "dateUpdated": "Aug 28, 2016 3:06:53 PM",
+      "text": "%spark\n\nimport org.elasticsearch.spark.rdd._\n\ncase class Metric(timestamp: String, ip: String, port: Int, len: Int, city: String \u003d \"\", country: String \u003d \"\", location: Array[Float] \u003d Array(0, 0))\n\nclass MetricBuilder(val geodb: String) {\n    import org.joda.time.format._\n    import org.joda.time.{DateTime, DateTimeZone}\n    import com.snowplowanalytics.maxmind.iplookups.IpLookups\n    \n    def build(line: String): Metric \u003d {\n        val attrs \u003d line.split(\" \")\n        if (attrs.size \u003c 8) {\n            return Metric(\"\", \"\", 0, 0)\n        }\n\n        val datetime \u003d new DateTime(attrs(0) + \"T\" + attrs(1), DateTimeZone.forID(\"America/Los_Angeles\"))\n        val timestamp \u003d datetime.toString(ISODateTimeFormat.dateTime())\n\n        val remote \u003d attrs(5)\n        val (ip, port) \u003d remote.splitAt(remote.lastIndexOf(\".\"))\n\n        val ipl \u003d IpLookups(geoFile \u003d Some(geodb))\n        val (city, country, lat:Float, lon:Float) \u003d ipl.performLookups(ip)._1 match {\n            case Some(geo) \u003d\u003e (geo.city, Option(geo.countryName), geo.latitude, geo.longitude)\n            case _ \u003d\u003e (None, None, 0, 0)\n        }\n\n        return Metric(timestamp, ip, port.stripPrefix(\".\").stripSuffix(\":\").toInt,\n            attrs(7).toInt, city.getOrElse(\"\"), country.getOrElse(\"\"), Array(lon, lat))\n    }\n}\n\nval lines \u003d spark.sparkContext.textFile(\"/var/lib/data/tcpdump.txt\")\nval metrics \u003d lines\n    .map(line \u003d\u003e new MetricBuilder(\"/var/lib/geo/GeoLiteCity.dat\").build(line))\n    .filter(metric \u003d\u003e metric.len \u003e 0)\n\nEsSpark.saveToEs(metrics, \"tcpdump/metric\", Map(\"es.mapping.timestamp\" -\u003e \"timestamp\"))",
+      "dateUpdated": "Aug 28, 2016 3:35:28 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -27,11 +27,11 @@
       "result": {
         "code": "SUCCESS",
         "type": "TEXT",
-        "msg": "\nimport org.elasticsearch.spark.rdd._\n\ndefined class Metric\n\ndefined class MetricBuilder\n\nlines: org.apache.spark.rdd.RDD[String] \u003d /var/lib/data/tcpdump.txt MapPartitionsRDD[5] at textFile at \u003cconsole\u003e:31\n\nmetrics: org.apache.spark.rdd.RDD[Metric] \u003d MapPartitionsRDD[7] at filter at \u003cconsole\u003e:38\n"
+        "msg": "\nimport org.elasticsearch.spark.rdd._\n\ndefined class Metric\n\ndefined class MetricBuilder\n\nlines: org.apache.spark.rdd.RDD[String] \u003d /var/lib/data/tcpdump.txt MapPartitionsRDD[9] at textFile at \u003cconsole\u003e:34\n\nmetrics: org.apache.spark.rdd.RDD[Metric] \u003d MapPartitionsRDD[11] at filter at \u003cconsole\u003e:41\n"
       },
       "dateCreated": "Aug 17, 2016 1:26:55 AM",
-      "dateStarted": "Aug 28, 2016 3:06:53 PM",
-      "dateFinished": "Aug 28, 2016 3:07:02 PM",
+      "dateStarted": "Aug 28, 2016 3:35:28 PM",
+      "dateFinished": "Aug 28, 2016 3:35:36 PM",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -220,15 +220,11 @@
       "apps": [],
       "jobName": "paragraph_1471441185184_-1586702994",
       "id": "20160817-133945_1388408306",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset\u003dUTF-8\r\nContent-Length: 21\r\n\r\n{\"acknowledged\":true}"
-      },
       "dateCreated": "Aug 17, 2016 1:39:45 AM",
       "dateStarted": "Aug 28, 2016 3:06:54 PM",
       "dateFinished": "Aug 28, 2016 3:06:54 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
@@ -255,15 +251,11 @@
       "apps": [],
       "jobName": "paragraph_1471441633295_1913588136",
       "id": "20160817-134713_454116093",
-      "result": {
-        "code": "SUCCESS",
-        "type": "TEXT",
-        "msg": "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset\u003dUTF-8\r\nContent-Length: 21\r\n\r\n{\"acknowledged\":true}"
-      },
       "dateCreated": "Aug 17, 2016 1:47:13 AM",
       "dateStarted": "Aug 28, 2016 3:06:54 PM",
       "dateFinished": "Aug 28, 2016 3:06:54 PM",
       "status": "FINISHED",
+      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
@@ -305,7 +297,7 @@
   "name": "2. TcpDump with ElasticSearch",
   "id": "2BVZ5J3VJ",
   "lastReplName": {
-    "value": "sh"
+    "value": "spark"
   },
   "angularObjects": {
     "2BUKBQF99:shared_process": [],

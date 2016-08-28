@@ -10,7 +10,7 @@ class MetricBuilder(val geodb: String) {
     def build(line: String): Metric = {
         val attrs = line.split(" ")
         if (attrs.size < 8) {
-            return new Metric("", "", 0, 0)
+            return Metric("", "", 0, 0)
         }
 
         val datetime = new DateTime(attrs(0) + "T" + attrs(1), DateTimeZone.forID("America/Los_Angeles"))

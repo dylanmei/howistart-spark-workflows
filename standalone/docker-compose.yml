@@ -1,7 +1,9 @@
 version: "2"
+
 networks:
   spark:
     driver: bridge
+
 services:
   master:
     image: gettyimages/spark:2.0.0-hadoop-2.7
@@ -35,7 +37,7 @@ services:
     image: gettyimages/spark:2.0.0-hadoop-2.7
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://master:7077
     environment:
-      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_CORES: 1
       SPARK_WORKER_MEMORY: 1g
       SPARK_WORKER_WEBUI_PORT: 4041
       SPARK_WORKER_PORT: 17000
