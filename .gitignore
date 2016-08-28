@@ -1,6 +1,5 @@
 geo/*.*
-data/*.*
-data/**/*.*
+data/tcpdump*
 spark/target/*
 spark/project/*
 !spark/project/plugins.sbt
