@@ -1,0 +1,59 @@
+version: '2'
+
+networks:
+  spark:
+    driver: bridge
+
+services:
+  zookeeper:
+    image: jplock/zookeeper:3.4.6
+    networks: [spark]
+    logging:
+      driver: none
+
+  mesos:
+    image: mesosphere/mesos-master:1.0.0
+    networks: [spark]
+    ports:
+      - "5050:5050"
+#    logging:
+#      driver: none
+    environment:
+      MESOS_LOG_DIR: /var/log
+      MESOS_CLUSTER: localmesos
+      MESOS_ZK: zk://zookeeper:2181/mesos
+      MESOS_HOSTNAME: localhost
+      MESOS_WORK_DIR: /var/lib/mesos
+      MESOS_QUORUM: 1
+
+  agent:
+    image: mesosphere/mesos-slave:1.0.0
+    networks: [spark]
+    ports:
+      - "5051:5051"
+#    logging:
+#      driver: none
+    environment:
+      MESOS_MASTER: zk://zookeeper:2181/mesos
+      MESOS_ISOLATOR: "cgroups/cpu,cgroups/mem"
+      MESOS_EXECUTOR_REGISTRATION_TIMEOUT: "5mins"
+      MESOS_HOSTNAME: localhost
+      MESOS_PORT: "5051"
+      MESOS_WORK_DIR: /var/lib/mesos
+      MESOS_CONTAINERIZERS: "docker,mesos"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc:/host/proc:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup
+
+  marathon:
+    image: mesosphere/marathon:v1.1.2
+    networks: [spark]
+    ports:
+      - "8080:8080"
+    logging:
+      driver: none
+    environment:
+      MARATHON_WEBUI_URL: "http://localhost:8080"
+      MARATHON_MESOS_LEADER_UI_URL: "http://localhost:5050"
+    command: "--master zk://zookeeper:2181/mesos --zk zk://zookeeper:2181/marathon"
