@@ -57,3 +57,13 @@ services:
       MARATHON_WEBUI_URL: "http://localhost:8080"
       MARATHON_MESOS_LEADER_UI_URL: "http://localhost:5050"
     command: "--master zk://zookeeper:2181/mesos --zk zk://zookeeper:2181/marathon"
+
+  nginx:
+    image: nginx
+    networks: [spark]
+    expose:
+      - 80
+    volumes:
+      - ../geo:/usr/share/nginx/html/geo:ro
+      - ../spark/target/scala-2.11:/usr/share/nginx/html/target
+
