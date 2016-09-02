@@ -1,0 +1,25 @@
+{
+  "id": "/elasticsearch",
+  "cpus": 1,
+  "mem": 1024,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "elasticsearch:2.3",
+      "network": "BRIDGE",
+      "portMappings": [{
+        "containerPort": 9200,
+        "hostPort": 9200,
+        "protocol": "tcp"
+      }],
+      "parameters": [{
+        "key": "net-alias",
+        "value": "elasticsearch"
+      }, {
+        "key": "net",
+        "value": "mesos_spark"
+      }]
+    }
+  }
+}

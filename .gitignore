@@ -4,3 +4,4 @@ spark/target/*
 spark/project/*
 !spark/project/plugins.sbt
 !spark/project/build.properties
+cache/

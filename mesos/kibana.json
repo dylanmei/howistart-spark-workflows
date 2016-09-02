@@ -1,0 +1,25 @@
+{
+  "id": "kibana",
+  "cpus": 0.5,
+  "mem": 512,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "kibana:4.5",
+      "network": "BRIDGE",
+      "parameters": [{
+        "key": "net",
+        "value": "mesos_spark"
+      }, {
+        "key": "net-alias",
+        "value": "kibana"
+      }],
+      "portMappings": [{
+        "containerPort": 5601,
+        "hostPort": 5601,
+        "protocol": "tcp"
+      }]
+    }
+  }
+}
