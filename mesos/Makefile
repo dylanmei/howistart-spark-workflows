@@ -4,17 +4,24 @@ default: help
 
 help:
 	# $(PROJECT_DIR)
+	# make run-streaming
+	# make run-elasticsearch
+	# make run-kibana
 	# make setup-elasticsearch-index-template
 	# make remove-elasticsearch-index
 	# 
 	# Mesos is running at localhost:5050
 	# Marathon is running at localhost:8080
-	# ElasticSearch is running at localhost:9200
-	# Kibana is running at localhost:5601
-	#
-	# tcpdump to file:       sudo tcpdump -qfn -tttt -i wlp1s0 'src net 10.0.0.0/8 and (tcp[tcpflags] & tcp-push != 0)' | tee $(PROJECT_DIR)/data/tcpdump.txt
-	# tcpdump to directory:  sudo tcpdump -qfn -tttt -i wlp1s0 'src net 10.0.0.0/8 and (tcp[tcpflags] & tcp-push != 0)' | split -l 100 - $(PROJECT_DIR)/data/tcpdump-
-	# tcpdump ls interfaces: sudo tcpdump --list-interfaces
+	# Chronos is running at localhost:4040
+
+run-streaming:
+	@curl -si -XPUT -H "Content-Type: application/json" http://localhost:8080/v2/apps/spark-streaming -d@spark-streaming.json
+
+run-elasticsearch:
+	@curl -si -XPUT -H "Content-Type: application/json" http://localhost:8080/v2/apps/elasticsearch -d@elasticsearch.json
+
+run-kibana:
+	@curl -si -XPUT -H "Content-Type: application/json" http://localhost:8080/v2/apps/kibana -d@kibana.json
 
 remove-elasticsearch-index:
 	@curl -si -XDELETE http://localhost:9200/tcpdump
