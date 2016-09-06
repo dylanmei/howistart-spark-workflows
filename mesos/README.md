@@ -24,3 +24,5 @@ Now visit:
 Run `make run-streaming` to run the Spark *streaming* application using Marathon, a distributed *init-like* scheduler. It will run our Spark application indefinately. It will show up as a Mesos framework in the Frameworks tab.
 
 Similar to our Zeppelin exercise, we need to populate the `data` directory with live data. From the project directory, run `tcpdump` and `split` together to break our logs into files, 200 lines each: `sudo tcpdump -qfn -tttt -i wlp1s0 -Q out '(tcp[tcpflags] & tcp-push != 0)' | split -l 200 - data/tcpdump-`. Your `-i` interface argument may differ; run `tcpdump --list-interfaces` to determine the interface name of your internet connection.
+
+**NOTE** Because we've used Mesos to launch the ElasticSearch and Kibana Docker containers, simply exiting Docker Compose isn't enough to shut down these services. Exit them in Marathon prior to exiting Docker Compose, or remove them manually using the `docker rm` command.
