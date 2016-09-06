@@ -68,4 +68,4 @@ services:
       - 80
     volumes:
       - ../spark/target/scala-2.11:/usr/share/nginx/html/target
-      - ../cache:/usr/share/nginx/html/cache
+#      - ../cache:/usr/share/nginx/html/cache

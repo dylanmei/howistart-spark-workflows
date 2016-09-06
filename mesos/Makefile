@@ -4,7 +4,7 @@ default: help
 
 help:
 	# $(PROJECT_DIR)
-	# make run-streaming
+	# make run-spark-streaming
 	# make run-elasticsearch
 	# make run-kibana
 	# make setup-elasticsearch-index-template
@@ -14,7 +14,7 @@ help:
 	# Marathon is running at localhost:8080
 	# Chronos is running at localhost:4040
 
-run-streaming:
+run-spark-streaming:
 	@curl -si -XPUT -H "Content-Type: application/json" http://localhost:8080/v2/apps/spark-streaming -d@spark-streaming.json
 
 run-elasticsearch:

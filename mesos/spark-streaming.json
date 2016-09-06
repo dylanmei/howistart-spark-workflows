@@ -3,16 +3,18 @@
   "cpus": 1,
   "mem": 1024,
   "instances": 1,
-  "cmd": "$SPARK_HOME/bin/spark-submit --name tcpdump-spark --class howistart.streaming.TcpDump --master mesos://zk://zookeeper:2181/mesos --conf spark.ui.port=$PORT0 --conf spark.driver.port=$PORT1 --conf spark.fileserver.port=$PORT2 --conf spark.mesos.coarse=true --conf spark.mesos.uris=http://nginx/cache/download.oracle.com/jre-8u31-linux-x64.tar.gz --conf spark.executorEnv.JAVA_HOME=../jre --conf spark.es.nodes=elasticsearch:9200 --conf spark.es.discovery=false --executor-memory 1g --total-executor-cores 1 howistart-spark.jar --geodb /var/lib/geo/GeoLiteCity.dat --tcpdump /var/lib/data",
+  "cmd": "$SPARK_HOME/bin/spark-submit --name tcpdump-spark --class howistart.streaming.TcpDump --master mesos://zk://zookeeper:2181/mesos --conf spark.ui.port=$PORT0 --conf spark.driver.port=$PORT1 --conf spark.fileserver.port=$PORT2 --conf spark.mesos.coarse=true --conf spark.mesos.uris=https://downloads.mesosphere.com/cassandra/assets/1.0.8-2.2.5/server-jre-8u74-linux-x64.tar.gz --conf spark.executorEnv.JAVA_HOME=../jre --conf spark.es.nodes=elasticsearch:9200 --conf spark.es.discovery=false --executor-memory 1g --total-executor-cores 1 howistart-spark.jar --geodb /var/lib/geo/GeoLiteCity.dat --tcpdump /var/lib/data",
   "env": {
     "JAVA_HOME": "./jre",
     "SPARK_HOME": "./spark-2.0.0-bin-hadoop2.7",
-    "SPARK_EXECUTOR_URI": "http://nginx/cache/d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-hadoop2.7.tgz"
+    "SPARK_EXECUTOR_URI": "http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-hadoop2.7.tgz"
   },
   "ports": [0, 0, 0],
-  "uris": [
-    "http://nginx/target/howistart-spark.jar",
-    "http://nginx/cache/download.oracle.com/jre-8u31-linux-x64.tar.gz",
-    "http://nginx/cache/d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-hadoop2.7.tgz"
-  ]
+  "fetch": [{
+    "uri": "http://nginx/target/howistart-spark.jar"
+  }, {
+    "uri": "https://downloads.mesosphere.com/cassandra/assets/1.0.8-2.2.5/server-jre-8u74-linux-x64.tar.gz", "extract": true, "cache": true
+  }, {
+    "uri": "http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-hadoop2.7.tgz", "extract": true, "cache": true
+  }]
 }
